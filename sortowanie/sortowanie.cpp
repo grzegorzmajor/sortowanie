@@ -30,6 +30,7 @@ void printTable() {
 	for (int i = 0; i < tableSize; i++) {
 		cout << tab[i];
 		if (i < tableSize - 1) cout << ", ";
+		if (i != 0 && i % 16 == 0) cout << endl;
 	}
 	cout << "\n**------------------------------------------------------------------------------------**\n";
 	cout << "**------------------------------------------------------------------------------------**\n";
@@ -65,7 +66,7 @@ int main()
 {
 	randomizeTheTable();
 	printTable();
-	cout << bubbleSort();
+	cout <<"Liczba krokow: " << bubbleSort();
 	printTable();
 
 }
