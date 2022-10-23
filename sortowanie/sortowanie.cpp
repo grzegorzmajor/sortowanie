@@ -9,7 +9,8 @@ using namespace std;
 const int tableSize = 20;
 const int maxNum = 1000;
 
-int tab[tableSize];
+int tab1[tableSize];
+int tab2[tableSize];
 
 void initRand() {
 	//inicjacja losowości
@@ -22,36 +23,43 @@ int randomInt(int start, int stop) {
 	return num;
 }
 
-void printTable() {
-	//wydruk tabeli na ekranie
-	cout << "\n\n**------------------------------------------------------------------------------------**\n";
-	cout << "**------------------------------         Tabela         ------------------------------**\n";
-	cout << "**------------------------------------------------------------------------------------**\n";
-	for (int i = 0; i < tableSize; i++) {
-		cout << tab[i];
-		if (i < tableSize - 1) cout << ", ";
-		if (i != 0 && i % 16 == 0) cout << endl;
+void copyTable(int t[], int zrodlo[], int size) {
+	for (int i=0; i < size; i++) {
+		t[i] = zrodlo[i];
 	}
-	cout << "\n**------------------------------------------------------------------------------------**\n";
-	cout << "**------------------------------------------------------------------------------------**\n";
 }
 
-void randomizeTheTable() {
+void printTable(int t[],int size) {
+	//wydruk tabeli na ekranie
+	cout << "||====================================================================================||\n";
+	cout << "||------------------------------         Tabela         ------------------------------||\n";
+	cout << "||------------------------------------------------------------------------------------||\n";
+	cout << "|| ";
+	for (int i = 0; i < size; i++) {
+		cout << t[i];
+		if (i < size - 1) cout << ", ";
+		if (i != 0 && i % 15 == 0) cout << endl << "|| ";
+	}
+	cout << "\n||------------------------------------------------------------------------------------||\n";
+	cout << "||====================================================================================||\n";
+}
+
+void randomizeTheTable(int t[],int size) {
 	initRand();
-	for (int i = 0; i < tableSize; i++) tab[i] = randomInt(0, maxNum);
+	for (int i = 0; i < size; i++) t[i] = randomInt(0, maxNum);
 }
 
-int bubbleSort() {
+int bubbleSort(int t[],int size) {
 	//zwraca liczbę kroków
 	bool flaga = false;
 	int d = 0;
-	for (int j = 0; j < (tableSize - 1); j++) {
+	for (int j = 0; j < (size - 1); j++) {
 		flaga = false;
-		for (int i = (tableSize - 1); i > j; i--) {
-			if (tab[i - 1] > tab[i]) {
-				int temp = tab[i - 1];
-				tab[i - 1] = tab[i];
-				tab[i] = temp;
+		for (int i = (size - 1); i > j; i--) {
+			if (t[i - 1] > t[i]) {
+				int temp = t[i - 1];
+				t[i - 1] = t[i];
+				t[i] = temp;
 				flaga = true;
 			}
 			d++;
@@ -101,12 +109,17 @@ void quickSort(int t[], int start, int stop) {
 	}
 }
 
-int main()
-{
-	randomizeTheTable();
-	printTable();
-	//cout <<"Liczba krokow: " << bubbleSort();
-	quickSort(tab,0,tableSize-1);
-	printTable();
+int main() {
+	randomizeTheTable(tab1,tableSize);
+	copyTable(tab2, tab1,tableSize);
+	printTable(tab1,tableSize);
+	printTable(tab2,tableSize);
 
+	cout << endl << endl << " Bubble Sort: " << endl;
+	cout << "Liczba krokow: " << bubbleSort(tab1, tableSize) << endl;
+	printTable(tab1, tableSize);
+
+	cout << endl << endl << " Quick Sort: " << endl;
+	quickSort(tab2,0,tableSize-1); //dla ułatwienia rekurencji w argumencie przekazywany jest index ostatniego elementu a nie ilość elem. 
+	printTable(tab2,tableSize);
 }
