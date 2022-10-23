@@ -6,7 +6,7 @@
 
 using namespace std;
 
-const int tableSize = 100;
+const int tableSize = 20;
 const int maxNum = 1000;
 
 int tab[tableSize];
@@ -61,12 +61,52 @@ int bubbleSort() {
 	return d;
 }
 
+void zamien(int t[], int a, int b) {
+	int temp = t[a];
+	t[a] = t[b];
+	t[b] = temp;
+	return;
+}
+
+void quickSort(int t[], int start, int stop) {
+/* quicksort(tablica, indeks 1 elementu, indeks ostatniego 
+	komentarze wewnątrz kodu to polecenia do wyświetlania przebiegu sortowania */
+	if (stop - start > 1) {
+		//cout << " Wiecej niz 2 elementy: " << start << " " << stop << endl;
+		int podzial = start;
+		for (int i = start; i < stop; i++) {
+			//cout << "  Petla: element " << i << " wartosc " << t[i] << " dzielnika: " << t[stop];
+			if (t[i]<t[stop]) {
+				if (i != podzial) {
+					zamien(t, i, podzial);
+					//cout << " zamiana ";
+				}
+				podzial++;
+				//cout << " zwiekszam indeks podzialu=" << podzial;
+			}
+			cout << endl;
+		}
+		//cout << " ustawiam dzielnik na pozycji " << podzial << " wartosc dzielnika " << t[stop] << " element zmieniany " << t[podzial] <<endl;
+		zamien(t, podzial, stop);
+		quickSort(t, start, podzial - 1);
+		quickSort(t, podzial + 1, stop);
+	}
+	if (stop - start == 1) {
+		//cout << " dwa elementy: " << start << " " << stop << " wartosci: " << t[start] << " " << t[stop];
+		if (t[start] > t[stop]) {
+			//cout << " zamieniam ";
+			zamien(t, start, stop);
+		}
+		cout << endl;
+	}
+}
 
 int main()
 {
 	randomizeTheTable();
 	printTable();
-	cout <<"Liczba krokow: " << bubbleSort();
+	//cout <<"Liczba krokow: " << bubbleSort();
+	quickSort(tab,0,tableSize-1);
 	printTable();
 
 }
