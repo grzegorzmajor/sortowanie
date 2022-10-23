@@ -84,7 +84,7 @@ void quickSort(int t[], int start, int stop) {
 				podzial++;
 				//cout << " zwiekszam indeks podzialu=" << podzial;
 			}
-			cout << endl;
+			//cout << endl;
 		}
 		//cout << " ustawiam dzielnik na pozycji " << podzial << " wartosc dzielnika " << t[stop] << " element zmieniany " << t[podzial] <<endl;
 		zamien(t, podzial, stop);
@@ -97,7 +97,7 @@ void quickSort(int t[], int start, int stop) {
 			//cout << " zamieniam ";
 			zamien(t, start, stop);
 		}
-		cout << endl;
+		//cout << endl;
 	}
 }
 
