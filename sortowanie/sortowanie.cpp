@@ -3,10 +3,11 @@
 // Tu będą poszczególne zadania.
 
 #include <iostream>
+#include <chrono>
 
 using namespace std;
 
-const int tableSize = 20;
+const int tableSize = 2000;
 const int maxNum = 1000;
 
 int tab1[tableSize];
@@ -116,10 +117,23 @@ int main() {
 	printTable(tab2,tableSize);
 
 	cout << endl << endl << " Bubble Sort: " << endl;
-	cout << "Liczba krokow: " << bubbleSort(tab1, tableSize) << endl;
+	cout << "Liczba krokow: ";
+	auto start1 = chrono::high_resolution_clock::now();
+	cout << bubbleSort(tab1, tableSize);
+	auto stop1 = chrono::high_resolution_clock::now();
+	cout << endl;
 	printTable(tab1, tableSize);
 
 	cout << endl << endl << " Quick Sort: " << endl;
+	auto start2 = chrono::high_resolution_clock::now();
 	quickSort(tab2,0,tableSize-1); //dla ułatwienia rekurencji w argumencie przekazywany jest index ostatniego elementu a nie ilość elem. 
+	auto stop2 = chrono::high_resolution_clock::now();
 	printTable(tab2,tableSize);
+
+	auto czas1 = std::chrono::duration_cast<std::chrono::microseconds>(stop1 - start1);
+	auto czas2 = std::chrono::duration_cast<std::chrono::microseconds>(stop2 - start2);
+
+	cout << "Czas pracy algorytmow (w mikrosekundach):" << endl;
+	cout << "	Bubble Sort : " << czas1.count() << endl;
+	cout << "	 Quick Sort : " << czas2.count() << endl;
 }
