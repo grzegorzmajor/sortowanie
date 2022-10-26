@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <chrono>
+#include "stoper.cpp"
 
 using namespace std;
 
@@ -111,29 +112,28 @@ void quickSort(int t[], int start, int stop) {
 }
 
 int main() {
+	stoper sBuble, sQuick;
 	randomizeTheTable(tab1,tableSize);
 	copyTable(tab2, tab1,tableSize);
 	printTable(tab1,tableSize);
 	printTable(tab2,tableSize);
 
 	cout << endl << endl << " Bubble Sort: " << endl;
-	cout << "Liczba krokow: ";
-	auto start1 = chrono::high_resolution_clock::now();
+	cout << "Liczba krokow: ";	
+	sBuble.setStartTime();
 	cout << bubbleSort(tab1, tableSize);
-	auto stop1 = chrono::high_resolution_clock::now();
+	sBuble.setStopTime();	
+
 	cout << endl;
 	printTable(tab1, tableSize);
 
 	cout << endl << endl << " Quick Sort: " << endl;
-	auto start2 = chrono::high_resolution_clock::now();
+	sQuick.setStartTime();
 	quickSort(tab2,0,tableSize-1); //dla ułatwienia rekurencji w argumencie przekazywany jest index ostatniego elementu a nie ilość elem. 
-	auto stop2 = chrono::high_resolution_clock::now();
+	sQuick.setStopTime();
 	printTable(tab2,tableSize);
 
-	auto czas1 = std::chrono::duration_cast<std::chrono::microseconds>(stop1 - start1);
-	auto czas2 = std::chrono::duration_cast<std::chrono::microseconds>(stop2 - start2);
-
 	cout << "Czas pracy algorytmow (w mikrosekundach):" << endl;
-	cout << "	Bubble Sort : " << czas1.count() << endl;
-	cout << "	 Quick Sort : " << czas2.count() << endl;
+	cout << "	Bubble Sort : " << sBuble.getStopwachTime(1) << endl;
+	cout << "	 Quick Sort : " << sQuick.getStopwachTime(1) << endl;
 }
