@@ -1,18 +1,23 @@
 ﻿// This is only to learn c++ and git/gitHub
-// PL: algorytmy i struktura danych na studiuje.it
+// That's why I am writing Polish below
+// PL: algorytmy i struktury danych na studiuje.it
 // Tu będą poszczególne zadania.
+// 
+// To jest już coś więcej niż w algorytmach.
+// pobawiłem się trochę
+// Dodałem swoją klasę stoper do liczenia czasu
+// pracy algorytmów
 
 #include <iostream>
 #include <chrono>
+#include <algorithm>
 #include "stoper.cpp"
 
 using namespace std;
 
-const int tableSize = 2000;
-const int maxNum = 1000;
-
-int tab1[tableSize];
-int tab2[tableSize];
+ 
+const int tableSize = 20000; //wielkosc tabeli 
+const int maxNum = 1000; //maksymalna wartosc elementu tablicy
 
 void initRand() {
 	//inicjacja losowości
@@ -25,43 +30,58 @@ int randomInt(int start, int stop) {
 	return num;
 }
 
-void copyTable(int t[], int zrodlo[], int size) {
-	for (int i=0; i < size; i++) {
-		t[i] = zrodlo[i];
+void copyTable(int cel[], int zrodlo[], int size) {
+	//kopiowanie calej tablicy
+	for (int i = 0; i < size; i++) {
+		cel[i] = zrodlo[i];
 	}
 }
 
-void printTable(int t[],int size) {
+void partialCopyTable(int cel[], int zrodlo[], int start, int stop) {
+	//kopiowanie czesciowe tablicy
+	for (int i = start; i <= stop; i++) {
+		cel[i] = zrodlo[i];
+	}
+}
+
+void moveValuesUp(int tab[], int start, int stop) {
+	for (int i = stop; i >= start; i--) {
+		tab[i+1] = tab[i];
+		if (i=start) tab[i] = NULL;
+	}
+}
+
+void printTable(int tab[],int size) {
 	//wydruk tabeli na ekranie
-	cout << "||====================================================================================||\n";
-	cout << "||------------------------------         Tabela         ------------------------------||\n";
-	cout << "||------------------------------------------------------------------------------------||\n";
+	cout << "||============================================================================================================||\n";
+	cout << "||============------------------------------         Tabela         ------------------------------============||\n";
+	cout << "||============------------------------------------------------------------------------------------============||\n";
 	cout << "|| ";
 	for (int i = 0; i < size; i++) {
-		cout << t[i];
+		cout << tab[i];
 		if (i < size - 1) cout << ", ";
 		if (i != 0 && i % 15 == 0) cout << endl << "|| ";
 	}
-	cout << "\n||------------------------------------------------------------------------------------||\n";
-	cout << "||====================================================================================||\n";
+	cout << "\n||============------------------------------------------------------------------------------------============||\n";
+	cout << "||============================================================================================================||\n";
 }
 
-void randomizeTheTable(int t[],int size) {
+void randomizeTheTable(int tab[],int size) {
 	initRand();
-	for (int i = 0; i < size; i++) t[i] = randomInt(0, maxNum);
+	for (int i = 0; i < size; i++) tab[i] = randomInt(0, maxNum);
 }
 
-int bubbleSort(int t[],int size) {
+int bubbleSort(int tab[],int size) {
 	//zwraca liczbę kroków
 	bool flaga = false;
 	int d = 0;
 	for (int j = 0; j < (size - 1); j++) {
 		flaga = false;
 		for (int i = (size - 1); i > j; i--) {
-			if (t[i - 1] > t[i]) {
-				int temp = t[i - 1];
-				t[i - 1] = t[i];
-				t[i] = temp;
+			if (tab[i - 1] > tab[i]) {
+				int temp = tab[i - 1];
+				tab[i - 1] = tab[i];
+				tab[i] = temp;
 				flaga = true;
 			}
 			d++;
@@ -71,14 +91,14 @@ int bubbleSort(int t[],int size) {
 	return d;
 }
 
-void zamien(int t[], int a, int b) {
-	int temp = t[a];
-	t[a] = t[b];
-	t[b] = temp;
+void zamien(int tab[], int a, int b) {
+	int temp = tab[a];
+	tab[a] = tab[b];
+	tab[b] = temp;
 	return;
 }
 
-void quickSort(int t[], int start, int stop) {
+void quickSort(int tab[], int start, int stop) {
 /* quicksort(tablica, indeks 1 elementu, indeks ostatniego 
 	komentarze wewnątrz kodu to polecenia do wyświetlania przebiegu sortowania */
 	if (stop - start > 1) {
@@ -86,9 +106,9 @@ void quickSort(int t[], int start, int stop) {
 		int podzial = start;
 		for (int i = start; i < stop; i++) {
 			//cout << "  Petla: element " << i << " wartosc " << t[i] << " dzielnika: " << t[stop];
-			if (t[i]<t[stop]) {
+			if (tab[i]<tab[stop]) {
 				if (i != podzial) {
-					zamien(t, i, podzial);
+					zamien(tab, i, podzial);
 					//cout << " zamiana ";
 				}
 				podzial++;
@@ -97,33 +117,67 @@ void quickSort(int t[], int start, int stop) {
 			//cout << endl;
 		}
 		//cout << " ustawiam dzielnik na pozycji " << podzial << " wartosc dzielnika " << t[stop] << " element zmieniany " << t[podzial] <<endl;
-		zamien(t, podzial, stop);
-		quickSort(t, start, podzial - 1);
-		quickSort(t, podzial + 1, stop);
+		zamien(tab, podzial, stop);
+		quickSort(tab, start, podzial - 1);
+		quickSort(tab, podzial + 1, stop);
 	}
 	if (stop - start == 1) {
 		//cout << " dwa elementy: " << start << " " << stop << " wartosci: " << t[start] << " " << t[stop];
-		if (t[start] > t[stop]) {
+		if (tab[start] > tab[stop]) {
 			//cout << " zamieniam ";
-			zamien(t, start, stop);
+			zamien(tab, start, stop);
 		}
 		//cout << endl;
 	}
 }
 
+void selectionSort(int tab[], int size) {
+	int indexSmallestVar;
+	for (int i = 0; i <size-1; i++) {
+		indexSmallestVar = i;
+		for (int j = i+1; j <size; j++) {
+			if (tab[indexSmallestVar] > tab[j]) {
+				indexSmallestVar = j;
+			}				
+		}
+		if (indexSmallestVar!=i) zamien(tab, i, indexSmallestVar);
+	}
+}
+
+void insertSort(int tab[], int size) {
+	for (int i = 1; i < size; i++) {
+		int temp = tab[i];
+		int j = i - 1;
+		while (i > 0 && tab[j] > temp) {
+			tab[j + 1] = tab[j--];
+			tab[j + 1] = temp;
+		}
+	}
+}
+
 int main() {
-	stoper sBuble, sQuick;
+	int tab1[tableSize];
+	int tab2[tableSize];
+	int tab3[tableSize];
+	int tab4[tableSize];
+	int tab5[tableSize];
+
+	Stoper sBubble, sQuick, sSelect, sInsert,sOther;
 	randomizeTheTable(tab1,tableSize);
 	copyTable(tab2, tab1,tableSize);
+	copyTable(tab3, tab1, tableSize);
+	copyTable(tab4, tab1, tableSize);
+	copyTable(tab5, tab1, tableSize);
+	cout << endl << " Tabela wejsciowa: " << endl;
 	printTable(tab1,tableSize);
-	printTable(tab2,tableSize);
+	
+
 
 	cout << endl << endl << " Bubble Sort: " << endl;
 	cout << "Liczba krokow: ";	
-	sBuble.setStartTime();
+	sBubble.setStartTime();
 	cout << bubbleSort(tab1, tableSize);
-	sBuble.setStopTime();	
-
+	sBubble.setStopTime();	
 	cout << endl;
 	printTable(tab1, tableSize);
 
@@ -133,7 +187,30 @@ int main() {
 	sQuick.setStopTime();
 	printTable(tab2,tableSize);
 
+	cout << endl << endl << " Selection Sort: " << endl;
+	sSelect.setStartTime();
+	selectionSort(tab3, tableSize);
+	sSelect.setStopTime();
+	printTable(tab3, tableSize);
+
+	cout << endl << endl << " Insertion Sort: " << endl;
+	sInsert.setStartTime();
+	selectionSort(tab4, tableSize);
+	sInsert.setStopTime();
+	printTable(tab4, tableSize);
+
+	cout << endl << endl << " Funkcja sortowania wbudowana w biblioteke algorithm: " << endl;
+	sOther.setStartTime();
+	sort(tab5,tab5+tableSize);
+	sOther.setStopTime();
+	printTable(tab5, tableSize);
+
 	cout << "Czas pracy algorytmow (w mikrosekundach):" << endl;
-	cout << "	Bubble Sort : " << sBuble.getStopwachTime(1) << endl;
-	cout << "	 Quick Sort : " << sQuick.getStopwachTime(1) << endl;
+	int jednostkaCzasu = 1; //1 mikrosekundy
+	cout << "	   Bubble Sort : " << sBubble.getStopwachTime(jednostkaCzasu) << endl;
+	cout << "	    Quick Sort : " << sQuick.getStopwachTime(jednostkaCzasu) << endl;
+	cout << "	Selection Sort : " << sSelect.getStopwachTime(jednostkaCzasu) << endl;
+	cout << "	Insertion Sort : " << sInsert.getStopwachTime(jednostkaCzasu) << endl << endl;
+	cout << "	Funkcja sortowania wbudowana w biblioteke algorithm: " << endl;
+	cout << "	                 " << sOther.getStopwachTime(jednostkaCzasu) << endl;
 }

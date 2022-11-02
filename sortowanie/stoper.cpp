@@ -2,13 +2,13 @@
 #include <chrono>
 using namespace std;
 
-class stoper
+class Stoper
 {
 private:
 	chrono::steady_clock::time_point  startTime, stopTime;
 
 public:
-	stoper() {}
+	Stoper() {}
 	void setStartTime() {
 		startTime = chrono::high_resolution_clock::now();
 	}
