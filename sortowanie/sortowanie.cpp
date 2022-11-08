@@ -11,12 +11,13 @@
 #include <iostream>
 #include <chrono>
 #include <algorithm>
+#include <cstdlib>
 #include "stoper.cpp"
 
 using namespace std;
 
  
-const int tableSize = 20000; //wielkosc tabeli 
+const int arraySize = 20000; //wielkosc tabeli 
 const int maxNum = 1000; //maksymalna wartosc elementu tablicy
 
 void initRand() {
@@ -30,14 +31,14 @@ int randomInt(int start, int stop) {
 	return num;
 }
 
-void copyTable(int cel[], int zrodlo[], int size) {
+void copyArray(int cel[], int zrodlo[], int size) {
 	//kopiowanie calej tablicy
 	for (int i = 0; i < size; i++) {
 		cel[i] = zrodlo[i];
 	}
 }
 
-void partialCopyTable(int cel[], int zrodlo[], int start, int stop) {
+void partialCopyArray(int cel[], int zrodlo[], int start, int stop) {
 	//kopiowanie czesciowe tablicy
 	for (int i = start; i <= stop; i++) {
 		cel[i] = zrodlo[i];
@@ -51,7 +52,7 @@ void moveValuesUp(int tab[], int start, int stop) {
 	}
 }
 
-void printTable(int tab[],int size) {
+void printArray(int tab[],int size) {
 	//wydruk tabeli na ekranie
 	cout << "||============================================================================================================||\n";
 	cout << "||============------------------------------         Tabela         ------------------------------============||\n";
@@ -66,7 +67,7 @@ void printTable(int tab[],int size) {
 	cout << "||============================================================================================================||\n";
 }
 
-void randomizeTheTable(int tab[],int size) {
+void randomizeTheArray(int tab[],int size) {
 	initRand();
 	for (int i = 0; i < size; i++) tab[i] = randomInt(0, maxNum);
 }
@@ -155,55 +156,70 @@ void insertSort(int tab[], int size) {
 	}
 }
 
-int main() {
-	int tab1[tableSize];
-	int tab2[tableSize];
-	int tab3[tableSize];
-	int tab4[tableSize];
-	int tab5[tableSize];
+int compare(const void* a, const void* b) {
+	const int* x = (int*)a;
+	const int* y = (int*)b;
+	if (*x > *y) return 1;
+	else if (*x < *y) return -1;
+	return 0;
+}
 
-	Stoper sBubble, sQuick, sSelect, sInsert,sOther;
-	randomizeTheTable(tab1,tableSize);
-	copyTable(tab2, tab1,tableSize);
-	copyTable(tab3, tab1, tableSize);
-	copyTable(tab4, tab1, tableSize);
-	copyTable(tab5, tab1, tableSize);
+int main() {
+
+	
+
+
+	int tab1[arraySize], tab2[arraySize], tab3[arraySize], tab4[arraySize], tab5[arraySize], tab6[arraySize];
+
+	Stoper sBubble, sQuick, sSelect, sInsert, sSort, sQSort;
+	randomizeTheArray(tab1, arraySize);
+	copyArray(tab2, tab1, arraySize);
+	copyArray(tab3, tab1, arraySize);
+	copyArray(tab4, tab1, arraySize);
+	copyArray(tab5, tab1, arraySize);
+	copyArray(tab6, tab1, arraySize);
 	cout << endl << " Tabela wejsciowa: " << endl;
-	printTable(tab1,tableSize);
+	printArray(tab1, arraySize);
 	
 
 
 	cout << endl << endl << " Bubble Sort: " << endl;
 	cout << "Liczba krokow: ";	
 	sBubble.setStartTime();
-	cout << bubbleSort(tab1, tableSize);
+	cout << bubbleSort(tab1, arraySize);
 	sBubble.setStopTime();	
 	cout << endl;
-	printTable(tab1, tableSize);
+	printArray(tab1, arraySize);
 
 	cout << endl << endl << " Quick Sort: " << endl;
 	sQuick.setStartTime();
-	quickSort(tab2,0,tableSize-1); //dla ułatwienia rekurencji w argumencie przekazywany jest index ostatniego elementu a nie ilość elem. 
+	quickSort(tab2,0, arraySize -1); //dla ułatwienia rekurencji w argumencie przekazywany jest index ostatniego elementu a nie ilość elem. 
 	sQuick.setStopTime();
-	printTable(tab2,tableSize);
+	printArray(tab2, arraySize);
 
 	cout << endl << endl << " Selection Sort: " << endl;
 	sSelect.setStartTime();
-	selectionSort(tab3, tableSize);
+	selectionSort(tab3, arraySize);
 	sSelect.setStopTime();
-	printTable(tab3, tableSize);
+	printArray(tab3, arraySize);
 
 	cout << endl << endl << " Insertion Sort: " << endl;
 	sInsert.setStartTime();
-	selectionSort(tab4, tableSize);
+	selectionSort(tab4, arraySize);
 	sInsert.setStopTime();
-	printTable(tab4, tableSize);
+	printArray(tab4, arraySize);
 
 	cout << endl << endl << " Funkcja sortowania wbudowana w biblioteke algorithm: " << endl;
-	sOther.setStartTime();
-	sort(tab5,tab5+tableSize);
-	sOther.setStopTime();
-	printTable(tab5, tableSize);
+	sSort.setStartTime();
+	sort(tab5,tab5+ arraySize);
+	sSort.setStopTime();
+	printArray(tab5, arraySize);
+
+	cout << endl << endl << " Funkcja qsort wbudowana w biblioteke cstdlib: " << endl;
+	sQSort.setStartTime();
+	qsort(tab6, arraySize, sizeof(int), compare);
+	sQSort.setStopTime();
+	printArray(tab6, arraySize);
 
 	cout << "Czas pracy algorytmow (w mikrosekundach):" << endl;
 	int jednostkaCzasu = 1; //1 mikrosekundy
@@ -212,5 +228,9 @@ int main() {
 	cout << "	Selection Sort : " << sSelect.getStopwachTime(jednostkaCzasu) << endl;
 	cout << "	Insertion Sort : " << sInsert.getStopwachTime(jednostkaCzasu) << endl << endl;
 	cout << "	Funkcja sortowania wbudowana w biblioteke algorithm: " << endl;
-	cout << "	                 " << sOther.getStopwachTime(jednostkaCzasu) << endl;
+	cout << "	                 " << sSort.getStopwachTime(jednostkaCzasu) << endl;
+
+	cout << "	Funkcja qsort wbudowana w biblioteke stdlib: " << endl;
+	cout << "	                 " << sQSort.getStopwachTime(jednostkaCzasu) << endl;
+
 }
